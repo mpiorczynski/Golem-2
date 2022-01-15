@@ -2,3 +2,4 @@
 *test*
 /venv
 /Audio_Speech*
+__pycache__
