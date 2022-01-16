@@ -1,32 +1,43 @@
 import streamlit as st
 from PIL import Image
-import cv2
-
-import hate_speech_classifier
-import hate_speech_blur
-import highlight_emotions
+import time
 
 def app():
-    # to be changed
-    
-    st.markdown('## Upload')
+    st.markdown('## Hate speech blur demonstration')
     st.write('\n')
 
+    if not st.button('Blur first tweet'):
+        image = Image.open('./tweets/unblured/hate_tweet.jpeg')
+        st.image(image, caption='First tweet before blur')
+    else:
+        with st.spinner('Wait for it...'):
+            time.sleep(0.3)
+            image = Image.open('./tweets/blured/output2.jpg')
+        st.image(image, caption='First tweet after blur')
 
-    uploaded_file = st.file_uploader("Choose a file", type=['png', 'jpg'])
+    if not st.button('Blur second tweet'):
+        image = Image.open('./tweets/unblured/nice_tweet1.png')
+        st.image(image, caption='Second tweet before blur')
+    else:
+        with st.spinner('Wait for it...'):
+            time.sleep(0.3)
+            image = Image.open('./tweets/unblured/nice_tweet1.png')
+        st.image(image, caption='Second tweet after blur')
 
-    if uploaded_file is not None:
-        image = Image.open(uploaded_file)
+    if not st.button('Blur third tweet'):
+        image = Image.open('./tweets/unblured/nice_tweet2.jpeg')
+        st.image(image, caption='Third tweet before blur')
+    else:
+        with st.spinner('Wait for it...'):
+            time.sleep(0.3)
+            image = Image.open('./tweets/unblured/nice_tweet2.jpeg')
+        st.image(image, caption='Third tweet after blur')
 
-        st.image(image, caption='Uploaded image')
-
-        # ogarnąć rozszerzenia
-        image.save("img.png")
-        cv_image = cv2.imread("img.png")
-
-        blurred = hate_speech_blur.blur_hate_speech(cv_image)
-
-        st.image(blurred, caption='Blurred image', channels="BGR")
-
-        cv_image = cv2.imread("img.png")
-        st.image(highlight_emotions.highlight_emotions(cv_image), caption='Highlihted emotions')
+    if not st.button('Blur fourth tweet'):
+        image = Image.open('./tweets/unblured/bad_tweet5.jpg')
+        st.image(image, caption='Fourth tweet before blur')
+    else:
+        with st.spinner('Wait for it...'):
+            time.sleep(0.3)
+            image = Image.open('./tweets/blured/output.jpg')
+        st.image(image, caption='Fourth tweet after blur')
