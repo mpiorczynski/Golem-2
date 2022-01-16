@@ -7,7 +7,7 @@ import app_watson
 
 app = MultiPage()
 
-st.title("Demonstration of our work")
+st.title("Multi-Dimensional-Filtering")
 
 app.add_page("Tweet demo", app_tweet.app)
 app.add_page("Cloud demo", app_cloud.app)
