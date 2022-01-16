@@ -20,6 +20,11 @@ def app():
     # ogarnąć rozszerzenia
     uploaded_file = st.file_uploader("Choose a file", type=['png', 'jpg'])
 
+    option = st.selectbox(
+     'Select classification',
+     ('Hate speech detection', 'Emotion classification'))
+
+
     if uploaded_file is not None:
         image = Image.open(uploaded_file)
 
@@ -27,19 +32,19 @@ def app():
         image.save("img.jpg")
 
         # if use_cloud:
-        files_hate = {'file_hate': ('img.jpg', open('img.jpg', 'rb'), "image/jpeg")}
-        resp_hate_img = requests.get(f'{BASE_URL}/pred/hate/im', files=files_hate)
-        blured_img = base64.b64decode(resp_hate_img.json().get('encoded_img'))
+        with st.spinner('Wait for it...'):
+            if option == 'Hate speech detection':
+                files_hate = {'file_hate': ('img.jpg', open('img.jpg', 'rb'), "image/jpeg")}
+                resp_hate_img = requests.get(f'{BASE_URL}/pred/hate/im', files=files_hate)
+                blured_img = base64.b64decode(resp_hate_img.json().get('encoded_img'))
 
-        st.image(blured_img, caption='Blured image')
+                st.image(blured_img, caption='Blured image')
+            else:
+                files_emo = {'file_emo': ('img.jpg', open('img.jpg', 'rb'), "image/jpeg")}
+                resp_emo_img = requests.get(f'{BASE_URL}/pred/emo/im', files=files_emo)
+                highligted_img = base64.b64decode(resp_emo_img.json().get('encoded_img'))
 
-        files_emo = {'file_emo': ('img.jpg', open('img.jpg', 'rb'), "image/jpeg")}
-        resp_emo_img = requests.get(f'{BASE_URL}/pred/emo/im', files=files_emo)
-        print(resp_emo_img)
-        print(resp_emo_img.json())
-        highligted_img = base64.b64decode(resp_emo_img.json().get('encoded_img'))
-
-        st.image(highligted_img, caption='Highlihted emotions')
+                st.image(highligted_img, caption='Highlihted emotions')
 
 
         # else:
@@ -51,19 +56,24 @@ def app():
             # blurred_img = hate_speech_blur.blur_hate_speech(cv_image)
             # highligted_img = highlight_emotions.highlight_emotions(cv_image)
             # pass
+    if option == 'Hate speech detection':
+        text_input = st.text_input('Detect hate speech in text', '')
 
+        if text_input:
+            with st.spinner('Wait for it...'):
+                resp = requests.get(f'{BASE_URL}/pred/hate/txt', params={'text': text_input})
+                prediction = resp.json().get('pred')
+                # prediction = hate_speech_classifier.classify(text_input)
+            if prediction == 'no-hate-speech':
+                st.success(prediction)
+                # st.balloons()
+            else:
+                st.error(prediction)
+    else:
+        text_input = st.text_input('Classify emotion in text', '')
 
-
-
-
-    # text_input = st.text_input('Text', 'I like you')
-
-    # if text_input is not None:
-    #     with st.spinner('Wait for it...'):
-    #         prediction = hate_speech_classifier.classify(text_input)
-    #     if prediction == 'no-hate-speech':
-    #         st.success(prediction)
-    #         st.balloons()
-    #     else:
-    #         st.error(prediction)
-
+        if text_input:
+            with st.spinner('Wait for it...'):
+                resp = requests.get(f'{BASE_URL}/pred/emo/txt', params={'text': text_input})
+                prediction = resp.json().get('pred')
+            st.write(prediction)

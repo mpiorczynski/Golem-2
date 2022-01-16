@@ -11,6 +11,12 @@ app = FastAPI()
 async def test():
     return 'test successful'
 
+@app.get('/pred/hate/txt')
+def pred_hate_txt(text: str = "I like you"):
+    pred = backend.hate_clf(backend.MODELS['hate'], text, backend.MODELS['tok'])
+    return {'pred': pred}
+    
+
 @app.get('/pred/hate/im')
 async def pred_hate_img(file_hate: UploadFile = File(...)):
     contents_hate = await file_hate.read()
@@ -32,9 +38,11 @@ async def pred_hate_img(file_hate: UploadFile = File(...)):
     }
 
 
-@app.get('/pred/hate/txt')
-def pred_hate_txt(text: str = "I like you"):
-    return backend.hate_clf(backend.MODELS['hate'], backend.MODELS['tok'], text)
+@app.get('/pred/emo/txt')
+def pred_emo_txt(text: str = "I like you"):
+    pred = backend.MODELS['emo'](text)[0]['label']
+    return {'pred': pred}
+
 
 @app.get('/pred/emo/im')
 async def pred_emo_im(file_emo: UploadFile = File(...)):
@@ -55,11 +63,3 @@ async def pred_emo_im(file_emo: UploadFile = File(...)):
         'dimensions': img_dimensions_emo,
         'encoded_img': encoded_img_emo
     }
-
-@app.get('/pred/emo/txt')
-def pred_emo_txt(text: str = "I like you"):
-    return "text"
-    #backend.hate_clf(backend.MODELS['hate'], backend.MODELS['tok'], text)
-
-
-
