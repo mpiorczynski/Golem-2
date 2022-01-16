@@ -12,7 +12,7 @@ def app():
     else:
         with st.spinner('Wait for it...'):
             time.sleep(0.3)
-            image = Image.open('./tweets/blured/output.png')
+            image = Image.open('./tweets/blured/output2.jpg')
         st.image(image, caption='First tweet after blur')
 
     if not st.button('Blur second tweet'):
@@ -39,5 +39,5 @@ def app():
     else:
         with st.spinner('Wait for it...'):
             time.sleep(0.3)
-            image = Image.open('./tweets/blured/output2.png')
+            image = Image.open('./tweets/blured/output.jpg')
         st.image(image, caption='Fourth tweet after blur')
