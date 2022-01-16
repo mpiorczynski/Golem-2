@@ -43,7 +43,7 @@ def blur_hate_speech(model, tokenizer, img):
         cropped = img[y:y + h, x:x + w]
         is_hate_speech = False
         text = pytesseract.image_to_string(cropped)
-        text = text.replace('\n', ' ').rstrip()
+        text = text.replace('\n', ' ')
         result = hate_clf(model, text, tokenizer)
         if result == "hate-speech":
                     is_hate_speech = True
