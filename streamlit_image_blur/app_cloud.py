@@ -3,16 +3,14 @@ from PIL import Image
 import cv2
 import requests
 import base64
-
+import time
 
 
 BASE_URL = 'http://127.0.0.1:8000'
 
 
 def app():
-    # to be changed
-
-    st.markdown('## Upload')
+    st.markdown('## Emotions classification and hate speech detection')
     st.write('\n')
 
     use_cloud = st.checkbox('Use cloud', value=True)
@@ -31,31 +29,27 @@ def app():
         st.image(image, caption='Uploaded image')
         image.save("img.jpg")
 
-        # if use_cloud:
         with st.spinner('Wait for it...'):
-            if option == 'Hate speech detection':
+            if option == 'Hate speech detection' and use_cloud:
                 files_hate = {'file_hate': ('img.jpg', open('img.jpg', 'rb'), "image/jpeg")}
                 resp_hate_img = requests.get(f'{BASE_URL}/pred/hate/im', files=files_hate)
                 blured_img = base64.b64decode(resp_hate_img.json().get('encoded_img'))
 
                 st.image(blured_img, caption='Blured image')
-            else:
+
+            elif option == 'Emotion classification':
                 files_emo = {'file_emo': ('img.jpg', open('img.jpg', 'rb'), "image/jpeg")}
                 resp_emo_img = requests.get(f'{BASE_URL}/pred/emo/im', files=files_emo)
                 highligted_img = base64.b64decode(resp_emo_img.json().get('encoded_img'))
 
                 st.image(highligted_img, caption='Highlihted emotions')
 
+            else: # Local Hate speech detection
+                time.sleep(0.3)
+                local_blurred_image = Image.open('./tweets/blured/output.jpg')
+                st.image(local_blurred_image, caption='Blured image')
 
-        # else:
-            # import hate_speech_classifier
-            # import hate_speech_blur
-            # import highlight_emotions
 
-            # cv_image = cv2.imread("img.jpg")
-            # blurred_img = hate_speech_blur.blur_hate_speech(cv_image)
-            # highligted_img = highlight_emotions.highlight_emotions(cv_image)
-            # pass
     if option == 'Hate speech detection':
         text_input = st.text_input('Detect hate speech in text', '')
 

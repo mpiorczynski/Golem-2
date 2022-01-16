@@ -43,10 +43,8 @@ def blur_hate_speech(model, tokenizer, img):
         cropped = img[y:y + h, x:x + w]
         is_hate_speech = False
         text = pytesseract.image_to_string(cropped)
-        text = text.replace('\n', ' ')
-        print("text",text)
+        text = text.replace('\n', ' ').rstrip()
         result = hate_clf(model, text, tokenizer)
-        print("RESULT",result)
         if result == "hate-speech":
                     is_hate_speech = True
                 
@@ -81,14 +79,12 @@ def highlight_emotions(model, img):
         
         cropped = img[y:y + h, x:x + w]
         text = pytesseract.image_to_string(cropped)
-        text = text.replace('\n', ' ')
-        print("text",text)
+        text = text.replace('\n', ' ').rstrip()
         result = model(text)[0]['label']
-        print("RESULT", result)
                 
         if result != 'neutral':
-            cv2.putText(rgba, result, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 1, colors[result], 1)
-            cv2.rectangle(rgba, (x, y), (x+w, y+h), colors[result], 5)
+            cv2.putText(rgba, result, (x, y - 20), cv2.FONT_HERSHEY_SIMPLEX, 1, colors[result], 1)
+            cv2.rectangle(rgba, (x, y), (x+w, y+h), colors[result], 3)
 
     return rgba
     
