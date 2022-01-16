@@ -1,8 +1,9 @@
-from email.mime import image
 import streamlit as st
 from PIL import Image
+import cv2
 
 import hate_speech_classifier
+import hate_speech_blur
 
 def app():
     st.markdown('## Upload')
@@ -16,10 +17,17 @@ def app():
 
         st.image(image, caption='Uploaded image')
 
-    text_input = st.text_input('Text', 'Example text')
+        image.save("img.jpg")
+        cv_image = cv2.imread("img.jpg")
+
+        blurred = hate_speech_blur.blur_hate_speech(cv_image)
+
+        st.image(blurred, caption='Blurred image', channels="BGR")
+
+
+    text_input = st.text_input('Text', None)
 
     if text_input is not None:
-        # st.text(text_input)
         with st.spinner('Wait for it...'):
             prediction = hate_speech_classifier.classify(text_input)
         if prediction == 'no-hate-speech':
