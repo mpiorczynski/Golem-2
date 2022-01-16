@@ -22,7 +22,7 @@ def app():
 
         blurred = hate_speech_blur.blur_hate_speech(cv_image)
 
-        st.image(blurred, caption='Blurred image')
+        st.image(blurred, caption='Blurred image', channels="BGR")
 
 
     text_input = st.text_input('Text', None)
